@@ -1,4 +1,4 @@
 [core]
     remote = dagshub
 ['remote "dagshub"']
-    url = https://dagshub.com/harshu114/CropGuardSolo.dvc
+    url = https://dagshub.com/Harshu114/CropGuardSolo.dvc
