@@ -1,0 +1,6 @@
+outs:
+- md5: f069ec90300cac08489332d6a877c6c5.dir
+  size: 57507785
+  nfiles: 14343
+  hash: md5
+  path: masks_v3

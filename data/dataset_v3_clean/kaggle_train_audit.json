@@ -1,0 +1,74 @@
+{
+  "totals": {
+    "ok": 15635,
+    "review": 4853,
+    "spots": 240921
+  },
+  "per_class": {
+    "train/bacterial_spot": {
+      "ok": 798,
+      "review": 690
+    },
+    "train/early_blight": {
+      "ok": 311,
+      "review": 389
+    },
+    "train/Healthy": {
+      "ok": 838,
+      "review": 271
+    },
+    "train/late_blight": {
+      "ok": 930,
+      "review": 512
+    },
+    "train/leaf_mold": {
+      "ok": 493,
+      "review": 173
+    },
+    "train/mosaic_virus": {
+      "ok": 248,
+      "review": 13
+    },
+    "train/septoria_leaf_spot": {
+      "ok": 849,
+      "review": 390
+    },
+    "train/spider_mites": {
+      "ok": 974,
+      "review": 199
+    },
+    "train/target_spot": {
+      "ok": 753,
+      "review": 229
+    },
+    "train/yellow_leaf_curl_virus": {
+      "ok": 2687,
+      "review": 1062
+    },
+    "train/tomato": {
+      "ok": 454,
+      "review": 172
+    },
+    "train/leaf_miner": {
+      "ok": 4142,
+      "review": 377
+    },
+    "train/magnesium_deficiency": {
+      "ok": 749,
+      "review": 112
+    },
+    "train/nitrogen_deficiency": {
+      "ok": 61,
+      "review": 19
+    },
+    "train/potassium_deficiency": {
+      "ok": 23,
+      "review": 14
+    },
+    "train/spotted_wilt_virus": {
+      "ok": 1325,
+      "review": 231
+    }
+  },
+  "runtime_min": 25.5
+}
