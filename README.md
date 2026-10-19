@@ -95,14 +95,28 @@ and re-hosting 2.2 GB of photos nobody needs twice is waste.
 29,280 image files here — 20,488 train / 4,384 val / 4,408 test — which is the
 upstream 29,279 images plus one derived `_cropguard` crop in the test split.
 
-**Annotations and checkpoints — DVC.** Fetch with `dvc pull` after cloning:
+**Annotations and checkpoints.** The annotation sets are ordinary files inside this
+repository — no `dvc`, no credentials, just fetch them:
 
-| out | contents |
+| path | contents |
 |---|---|
 | `data/dataset_v3_clean/labels_v3` | 14,343 YOLO files, `class cx cy w h`, train split only |
 | `data/dataset_v3_clean/masks_v3` | 14,343 binary PNG masks, mode L, values {0, 255}, at mixed sizes (256×256 and 640×640) |
 | `data/dataset_v3_clean/qa_sheets` | 16 per-class contact sheets |
-| `model/weights` | 55 checkpoints, 565 MB |
+| `data/dataset_v3_clean/data.yaml` | the 16-class name map, CC BY 4.0, with provenance |
+
+Together that is 28,702 files / 66.3 MB, committed on purpose: an anonymous
+`https://raw.githubusercontent.com/Harshu114/CropGuardSolo/main/<path>` request gets any
+one of them directly.
+
+Only `model/weights` (565 MB of historical teacher and per-stage checkpoints, 55 files)
+is still DVC-tracked, and **`dvc pull` on it is not anonymous.** It points at DagsHub
+Storage, which answers `401` with an unconditional `WWW-Authenticate: Basic` challenge for
+every unauthenticated request to `/.dvc/`, even though the DagsHub repository is public —
+dummy credentials are rejected too, and only a real token succeeds. Access control does not
+follow repository visibility there. Treat the checkpoints as owner-retrievable, not public;
+the model that actually serves, `app/api/cropguard_model_v5.pt`, is committed here and needs
+nothing.
 
 Three things to know before you train on this, all measured rather than inherited
 from older notes in this repo:
