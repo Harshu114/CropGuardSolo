@@ -12,3 +12,4 @@ build/
 .venv*
 /data/dataset_v3_clean/images/
 /data/dataset_v3_clean/qa_viewer.html
+/data/dataset_v3_clean/review/

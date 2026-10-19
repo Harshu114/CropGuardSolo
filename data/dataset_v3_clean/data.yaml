@@ -1,0 +1,26 @@
+# Class map for the v3 detection labels in labels_v3/.
+# Names and order copied verbatim from the upstream corpus published on Kaggle
+# (harshalnandeshwar/cropguard-fully-annotated, full_annotated_dataset/data.yaml,
+# derived from Roboflow project harshal-nandeshwar/maskforcropguard, CC BY 4.0).
+# Split paths below are rewritten for this repository's layout.
+train: data/dataset_v3_clean/images/train
+val: data/dataset_v3_clean/images/val
+test: data/dataset_v3_clean/images/test
+nc: 16
+names:
+- Healthy
+- bacterial_spot
+- early_blight
+- late_blight
+- leaf_miner
+- leaf_mold
+- magnesium_deficiency
+- mosaic_virus
+- nitrogen_deficiency
+- potassium_deficiency
+- septoria_leaf_spot
+- spider_mites
+- spotted_wilt_virus
+- target_spot
+- tomato
+- yellow_leaf_curl_virus

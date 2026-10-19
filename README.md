@@ -86,8 +86,48 @@ A 4 GB-VRAM laptop is not enough for a full run; use Kaggle GPU (~5–6 h for al
 
 ## 📊 Data
 
-11 classes, from `ganrajlongadge/cropguard-corpus-claude`:
-29,611 train / 2,000 val / 1,286 test, with YOLO labels **and** masks, plus `data.yaml`.
+Two halves, deliberately split, because the images are already public elsewhere
+and re-hosting 2.2 GB of photos nobody needs twice is waste.
+
+**Images — Kaggle, anonymous download, no `dvc` required.**
+`https://www.kaggle.com/api/v1/datasets/download/harshalnandeshwar/cropguard-fully-annotated`
+2,300,126,145 bytes, CC BY 4.0, derived from Roboflow `harshal-nandeshwar/maskforcropguard`.
+29,280 image files here — 20,488 train / 4,384 val / 4,408 test — which is the
+upstream 29,279 images plus one derived `_cropguard` crop in the test split.
+
+**Annotations and checkpoints — DVC.** Fetch with `dvc pull` after cloning:
+
+| out | contents |
+|---|---|
+| `data/dataset_v3_clean/labels_v3` | 14,343 YOLO files, `class cx cy w h`, train split only |
+| `data/dataset_v3_clean/masks_v3` | 14,343 binary PNG masks, mode L, values {0, 255}, at mixed sizes (256×256 and 640×640) |
+| `data/dataset_v3_clean/qa_sheets` | 16 per-class contact sheets |
+| `model/weights` | 55 checkpoints, 565 MB |
+
+Three things to know before you train on this, all measured rather than inherited
+from older notes in this repo:
+
+1. **The label class space is 16, not 11.** `data/dataset_v3_clean/data.yaml` gives
+   `nc: 16` and the names. The served head is `NUM_CLASSES = 11`
+   (`app/api/model_server.py:50`), which is a *subset* of those 16. No 16→11 mapping
+   exists in this repository, so `train.py` will not consume these labels unmodified.
+   Only ids 1–13 and 15 ever appear as boxes; `0` (Healthy) carries no box by
+   definition and `14` (tomato) is unused.
+2. **Annotations cover the train split only.** `labels_v3` and `masks_v3` contain
+   14,343 files each and no `val`/`test` directories, while images exist for all
+   three splits. So 6,145 of the 20,488 train images are unlabeled, and val/test
+   cannot be scored from this corpus alone.
+3. **Masks are binary leaf masks, not lesion masks** — see the segmentation caveat
+   above and HANDOFF.md.
+
+`review_list.txt` names the 4,853 images the audit flagged for human review. The
+`review/` directory itself is not published: every file in it is a byte-identical
+copy of a file already in `images/`, so it would only re-upload photographs the
+Kaggle dataset already serves.
+
+*An earlier version of this section pointed at `ganrajlongadge/cropguard-corpus-claude`
+and quoted 29,611 / 2,000 / 1,286 splits. That dataset is not publicly retrievable,
+and those splits do not describe this corpus.*
 
 ## 🛠 Roadmap
 
