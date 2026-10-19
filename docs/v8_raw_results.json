@@ -1,0 +1,141 @@
+{
+  "meta": {
+    "source": "kaggle kernels output ganrajlongadge/cropguard-v8-train (train output only, NOT eval output)",
+    "download_path": "/tmp/kaggle_out_train",
+    "note": "results.json / results.md are eval outputs and were NOT available (eval kernel output download was denied). This file reproduces what the eval kernel's results.json would contain for the NEW checkpoint, populated from the train outputs we actually have (best_v8_raw.pt metrics + v8_train_log.csv). Anything that requires running the eval script on test splits is left as 'not_measured'."
+  },
+  "v8_training": {
+    "path": "/tmp/kaggle_out_train/best_v8_raw.pt",
+    "which": "raw",
+    "epoch": 35,
+    "metrics_source": "best_v8_raw.pt metrics dict (val only, best epoch by val macro_f1)",
+    "note": "best_v8_ema.pt was NOT saved (EMA never beat raw on val macro_f1). The eval kernel would pick best_v8_ema.pt first if present; since it is absent, it picks best_v8_raw.pt. NEW checkpoint = best_v8_raw.pt at epoch 35."
+  },
+  "train_stage_summary": {
+    "best_epoch": 35,
+    "best_which": "raw",
+    "best_score": 0.6786360825116339,
+    "best_iou": 0.04591453549641548,
+    "epochs_done": 102,
+    "aug_mode": "geo",
+    "minutes": 55.0,
+    "class_weights": [1.0, 1.0581250000000002, 0.8164965809277259, 0.8082903768656432, 0.8396426290380058, 1.2909944487358056, 0.9449111825230627, 1.015541452555552],
+    "note": "training stopped at epoch 102 of 120 due to TIME CAP (V8_CAP_MIN=55 min). EPOCHS env=120, BATCH=8, LR=5e-4, SEED=1337, SIZE=320, NC=8. Cosine LR with 5-epoch warmup."
+  },
+  "baselines": {
+    "majority_class": "early_blight",
+    "majority_class_val_acc": 0.21854103504830142,
+    "constant_severity_value": 0.0384,
+    "constant_severity_mae_val": 0.0384
+  },
+  "calibration": {
+    "temperature": "not_measured",
+    "abstain_threshold": "not_measured",
+    "seg_threshold": 0.5,
+    "constant_severity": 0.0384,
+    "note": "temperature + abstain_threshold are fitted by the eval kernel on VAL; we did not run the eval kernel, so these are not_measured. seg_threshold=0.5 is the hardcoded value used by both the train evaluate() and the eval metrics_from()."
+  },
+  "old_checkpoint": "not_measured",
+  "old_checkpoint_note": "OLD = cropguard-v7-diagnostics-input/checkpoint/best_val.pt. We did not download that dataset, so OLD is not_measured.",
+  "datasets_available": {
+    "plantseg_val": 156,
+    "plantseg_val_valid_cls": 151,
+    "plantseg_test_available": 150,
+    "plantseg_test_valid_cls": 140,
+    "plantdoc_test_available": "not_measured",
+    "note": "PlantDoc test (79 images) requires the cropguard-plantdoc-test dataset to be mounted; it was not in the train output."
+  },
+  "new_results_not_measured": {
+    "plantseg_val": {
+      "n_images": 151,
+      "source_images": 156,
+      "acc": 0.6954,
+      "acc_ci95": "not_measured",
+      "macro_f1": 0.6786,
+      "macro_f1_ci95": "not_measured",
+      "ece_prob": "not_measured",
+      "ece_prob_calibrated": "not_measured",
+      "temperature_used": "not_measured",
+      "lesion_iou": 0.0459,
+      "lesion_dice": 0.0878,
+      "sev_mae_pred_masks": 0.1026,
+      "sev_mae_true_leaf": 0.1137,
+      "sev_mae_constant_baseline": "not_measured",
+      "sev_spearman": "not_measured",
+      "over_pred_ratio": 7.61,
+      "lesion_inside_leaf": "not_measured",
+      "mean_pred_lesion_area": 4729.0,
+      "mean_true_lesion_area": 621.3,
+      "best_thr": 0.7,
+      "seg_threshold": 0.5,
+      "abstain": "not_measured",
+      "n_valid_cls": 151,
+      "n_sev": 151,
+      "per_class": {
+        "healthy": {"support": 20, "precision": 1.0, "recall": 1.0, "f1": 1.0},
+        "bacterial_spot": {"support": 21, "precision": 0.8181818181818182, "recall": 0.42857142857142855, "f1": 0.5625},
+        "early_blight": {"support": 33, "precision": 0.76, "recall": 0.5757575757575758, "f1": 0.6551724137931034},
+        "late_blight": {"support": 19, "precision": 0.7647058823529411, "recall": 0.6842105263157895, "f1": 0.7222222222222222},
+        "leaf_mold": {"support": 20, "precision": 0.6956521739130435, "recall": 0.8, "f1": 0.7441860465116279},
+        "mosaic_virus": {"support": 8, "precision": 0.6, "recall": 0.375, "f1": 0.46153846153846156},
+        "septoria_leaf_spot": {"support": 14, "precision": 0.3103448275862069, "recall": 0.6428571428571429, "f1": 0.4186046511627907},
+        "yellow_leaf_curl_virus": {"support": 16, "precision": 0.7619047619047619, "recall": 1.0, "f1": 0.8648648648648649}
+      },
+      "confusion_matrix": "not_measured",
+      "note": "Val metrics from best_v8_raw.pt at epoch 35 (best by val macro_f1). acc_ci95 / macro_f1_ci95 / ECE / abstain require running the eval kernel; not measured here."
+    },
+    "plantseg_test": "not_measured",
+    "plantdoc_test": "not_measured",
+    "plantseg_test_note": "PlantSeg test metrics require running the eval kernel on the test split; we did not run eval and must not fit/select on test.",
+    "plantdoc_test_note": "PlantDoc test (79 images) requires the cropguard-plantdoc-test dataset mounted and the eval kernel run."
+  },
+  "verdict": [
+    "V8 TRAIN COMPLETE (kernel status COMPLETE). Eval output not available from this host.",
+    "NEW checkpoint = best_v8_raw.pt at epoch 35 (raw; best_v8_ema.pt was not saved).",
+    "VAL macro_f1=0.6786 (> 0.643 threshold), VAL lesion_iou=0.0459 (> 0.028, 1.6x v7), VAL sev_mae_predmasks=0.1026 (>> 0.0384 baseline, severity NOT reliable on val), over_pred_ratio=7.61 (large over-prediction flag).",
+    "TEST metrics not measured here (eval output not downloaded).",
+    "From train metrics alone: classification usable on val, segmentation improved vs v7 but still weak, severity NOT reliable, over-prediction is a flag."
+  ],
+  "limitations": [
+    "Eval output (results.json / results.md) was not available — the v8 eval kernel output download was denied from this host. Only the v8 TRAIN kernel output was downloaded.",
+    "Severity is COMPUTED (lesion_px/leaf_px), not expert-graded; the annotation is a GrabCut leaf mask plus a lesion union.",
+    "Test sets are small (150 PlantSeg, 79 PlantDoc): CIs are wide.",
+    "Lab-to-field gap: PlantDoc is field imagery and is classification only.",
+    "Lesions are 3-8 px at 320 px, which is at the edge of what the segmentation head can localise.",
+    "Lesion segmentation grossly over-predicts (7.6x at best epoch, 3.1x at final epoch): pred_area 4729 vs true_area 621.3.",
+    "EMA checkpoint (best_v8_ema.pt) was NOT saved; the NEW checkpoint is the raw checkpoint. EMA at epoch 102 (from last_v8 ema_shadow) had macro_f1=0.6179, lesion_iou=0.0424, over_pred_ratio=3.59.",
+    "OLD (v7) columns are not_measured unless the v7 checkpoint is mounted.",
+    "PlantDoc columns are not_measured unless the PlantDoc dataset is mounted."
+  ],
+  "claims_safe_for_a_presentation": [
+    "The augmentation bug that misaligned lesion/leaf masks is fixed and gated by an automated test (image and both masks agree within 2 px).",
+    "Class-level, not pixel-level, performance on lab-style tomato imagery.",
+    "Severity is computed from the segmentation, not a learned head.",
+    "Numbers for the NEW checkpoint come from the saved val metrics dict at the best epoch; the comparison to v7 is from the v7 train log (val macro_f1=0.6435, lesion_iou=0.0290 at epoch 90; 0.6433/0.0282 at epoch 120).",
+    "The v8 TRAIN kernel completed (status COMPLETE) and wrote best_v8_raw.pt + v8_train_log.csv + stage_summary.json."
+  ],
+  "sanity": {
+    "pretrained_weights_loaded": true,
+    "pretrained_l1_vs_random": 0.23836876451969147,
+    "pretrained_l1_note": "stage0 check_pretrained(): first-conv L1 vs a random-init copy = 0.2384 > 0.01 threshold => NOT random init. mode=pretrained.",
+    "seg_head_in_optimizer": true,
+    "ema_updating": true,
+    "ema_note": "EMA decay=0.999, ema_checksum tracked every epoch; checksum moves every epoch (1.32->1.85->2.19 over epochs 35->60->90), proving EMA actually updated.",
+    "lr_epochs": {
+      "epoch 1": "9.889e-05",
+      "epoch 30": "4.441e-04",
+      "epoch 60": "2.676e-04",
+      "epoch 90": "8.026e-05",
+      "epoch 102 (final)": "3.060e-05"
+    },
+    "memorization": {
+      "stage1_geo_iou_at_500": 0.1934851824638746,
+      "stage1_nogeo_iou_at_500": 0.6708259717314488,
+      "note": "Memorization gate: 8 images, 500 steps. With geometric aug IoU=0.193; without (photometric only) IoU=0.671 (passes >0.5). Both run in stage1."
+    },
+    "best_checkpoint_selection": "val macro-F1 (tie-break lesion IoU), val only",
+    "best_checkpoint_selection_note": "stage2 selects best = {score, iou, epoch, which, metrics} where score=macro_f1, tie=lesion_iou; best_v8_raw.pt saved when which=='raw', best_v8_ema.pt when which=='ema'.",
+    "which_weights_produce_numbers": "raw (best_v8_raw.pt at epoch 35). EMA (best_v8_ema.pt) was NOT saved; at epoch 102 EMA had macro_f1=0.6179, below raw's best of 0.6786.",
+    "dataLoader_mask_alignment": "verified by stage0 check_geometry (geometry_ok: true) + the v8 dataset's single shared _augment transform applied to image, lesion_mask, leaf_mask, combined_mask together; stage1 runs both with and without geometric aug and reports IoU per step."
+  }
+}

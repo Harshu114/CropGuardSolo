@@ -1,0 +1,19 @@
+{
+  "id": "ganrajlongadge/cropguard-v8-train",
+  "title": "CropGuard v8 Train",
+  "code_file": "cropguard-v8-train.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    "ganrajlongadge/cropguard-v8-code",
+    "ganrajlongadge/cropguard-v7-diagnostics-input"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [],
+  "model_sources": []
+}

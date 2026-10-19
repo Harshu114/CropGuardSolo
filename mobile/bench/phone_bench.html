@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>CropGuard v7 — on-device latency</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; padding: 16px; background: #0f1115; color: #e8eaed;
+         font: 15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  p.sub { color: #9aa0a6; margin: 0 0 16px; font-size: 13px; }
+  .card { background: #171a21; border: 1px solid #262b34; border-radius: 10px;
+          padding: 14px; margin-bottom: 12px; }
+  label { display: block; font-size: 13px; color: #9aa0a6; margin-bottom: 6px; }
+  select, button, input { font: inherit; }
+  select { width: 100%; padding: 10px; background: #0f1115; color: #e8eaed;
+           border: 1px solid #2c333e; border-radius: 8px; }
+  button { width: 100%; padding: 12px; margin-top: 10px; border: 0; border-radius: 8px;
+           background: #4f8cff; color: #fff; font-weight: 600; }
+  button:disabled { background: #2c333e; color: #6b7280; }
+  #out { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+         font-size: 13px; }
+  .big { font-size: 30px; font-weight: 700; }
+  .muted { color: #9aa0a6; font-size: 12px; }
+</style>
+</head>
+<body>
+  <h1>CropGuard v7 — real-device latency</h1>
+  <p class="sub">Runs the ONNX model in this phone's browser (WASM). Open the URL
+     the laptop prints, pick a model, tap Run.</p>
+
+  <div class="card">
+    <label for="model">Model</label>
+    <select id="model">
+      <option value="cropguard_v8_fp32.onnx">v8 FP32 (10.1 MB)</option>
+      <option value="cropguard_v8_int8.onnx">v8 INT8 (3.0 MB)</option>
+      <option value="cropguard_v7_fp32.onnx">v7 FP32 (10.0 MB)</option>
+      <option value="cropguard_v7_fp32_int8_static.onnx">v7 INT8 static (3.0 MB)</option>
+      <option value="cropguard_v7_fp32_int8_dynamic.onnx">v7 INT8 dynamic (2.8 MB)</option>
+    </select>
+    <p class="muted">v8 files are the ones exported by the eval kernel
+       (<code>cropguard_v8_fp32.onnx</code>, <code>cropguard_v8_int8.onnx</code>).
+       Copy them into <code>models/</code> with EXACTLY those names, or the
+       browser 404s. Both take <code>image [1,3,320,320]</code> float32 in
+       [0,1], direct resize, no ImageNet normalisation. Opset 17 (v7) and 18
+       (v8) are both supported by onnxruntime-web 1.19.2.
+    </select>
+    <label for="runs" style="margin-top:12px">Timed runs</label>
+    <select id="runs">
+      <option value="30" selected>30</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+    <button id="go">Run benchmark</button>
+  </div>
+
+  <div class="card">
+    <div id="out" class="muted">idle</div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/ort.min.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+const log = (s) => { $("out").textContent = s; };
+
+function quantile(sorted, q) {
+  const pos = (sorted.length - 1) * q;
+  const lo = Math.floor(pos), hi = Math.ceil(pos);
+  if (lo === hi) return sorted[lo];
+  return sorted[lo] + (sorted[hi] - sorted[lo]) * (pos - lo);
+}
+
+async function run() {
+  const file = $("model").value;
+  const n = parseInt($("runs").value, 10);
+  $("go").disabled = true;
+  try {
+    log(`loading ${file} …`);
+    ort.env.wasm.numThreads = 1;          // what a typical mobile build uses
+    const sess = await ort.InferenceSession.create(file, {
+      executionProviders: ["wasm"],
+      graphOptimizationLevel: "all",
+    });
+    log("warming up …");
+    const data = new Float32Array(3 * 320 * 320);
+    for (let i = 0; i < data.length; i++) data[i] = Math.random();
+    // Use the model's OWN input name instead of a hardcoded "image" so a
+    // renamed input cannot silently fail. v7 and v8 both use "image", but
+    // v7 emits 5 outputs and v8 only 2 -- latency timing is output-agnostic,
+    // so both are benchmarkable here.
+    const inName = sess.inputNames[0];
+    const feed = {};
+    feed[inName] = new ort.Tensor("float32", data, [1, 3, 320, 320]);
+    const ioInfo = `INPUT      ${inName} ${JSON.stringify(sess.inputNames)}\n` +
+                   `OUTPUTS    ${JSON.stringify(sess.outputNames)}\n`;
+    for (let i = 0; i < 3; i++) await sess.run(feed);
+
+    const times = [];
+    for (let i = 0; i < n; i++) {
+      const t0 = performance.now();
+      await sess.run(feed);
+      times.push(performance.now() - t0);
+      if (i % 5 === 0) log(`running ${i + 1}/${n} …`);
+    }
+    times.sort((a, b) => a - b);
+    const mean = times.reduce((a, b) => a + b, 0) / times.length;
+    const ua = navigator.userAgent;
+    log(
+`MODEL      ${file}
+${ioInfo}RUNS       ${n}
+MEDIAN     ${quantile(times, 0.5).toFixed(1)} ms
+MEAN       ${mean.toFixed(1)} ms
+P90        ${quantile(times, 0.9).toFixed(1)} ms
+MIN / MAX  ${times[0].toFixed(1)} / ${times[times.length - 1].toFixed(1)} ms
+---
+device UA  ${ua}
+threads    1 (wasm)
+`);
+  } catch (e) {
+    log("ERROR: " + e.message + "\n\nIf this is a fetch/CORS error, serve the\n" +
+        "folder over HTTP (see README) rather than opening the file.");
+  } finally {
+    $("go").disabled = false;
+  }
+}
+$("go").addEventListener("click", run);
+</script>
+</body>
+</html>

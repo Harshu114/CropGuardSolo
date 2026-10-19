@@ -1,0 +1,104 @@
+Continuing the mask investigation — the montage "outline" look could be a display artifact of downscaling. The definitive test is native-pixel geometry: erosion survival + ASCII rendering. Also reading how the masks were derived.
+
+Key discovery: the corpus lesion masks come from PlantSeg polygon annotations (derive_dataset.py:3-4). Now the thickness test at native pixels, the 50-test progress, and the input corpus layout.
+
+The verdict is in and it's big: every one of the 635 lesioned masks is a 1-pixel-wide outline — 0.000 fraction of pixels survive a 3×3 erosion, ASCII dump shows 1px open curves, 60% form closed loops (perimeter polygons). The model has been trained against polygon outlines of lesions, not filled lesion regions. Let me find how the masks were rendered (the pack script) and confirm the fill fix produces sane targets.
+
+The pack ran as a Kaggle notebook. Reading the polygon→mask rendering function — that's where the outline rendering likely happens.
+
+Smoking gun found. prepare_plantseg.py:97-118 (poly_to_mask) renders COCO polygons by walking the boundary edges vertex-to-vertex and writing 1 pixel per step — the polygon interior is never filled. The docstring says "binary lesion mask", but the output is a 1-px polygon outline. That's the root cause: every downstream target (training masks, boxes, severity = perimeter ratio, eval IoU) inherits it.
+
+Let me verify the fix hypothesis: fill the outlines properly, check the stats, and re-evaluate the trained model against filled targets. Also checking the corpus layout for severity files.
+
+Severity is computed live from the masks in dataset.py (no CSVs) — so filling the masks fixes severity targets too, automatically. Checking the 50-test process and writing the fill-fix validation now.
+
+The 50-test process died silently at step 150 — I'll relaunch it using the tool's managed background mode this time. Then continue with the fill-fix validation.
+
+No local PlantSeg annotations (only logs) — so the fix path is: fill the outline masks (morphological close → flood-fill exterior → interior filled), validate against stats + visuals, and re-evaluate the old checkpoint against correct targets. Writing that now, and building a filled corpus copy.
+
+Let me clean up the dead/messy eval section I left in that script before running it.
+
+The closing-based fill failed to seal the loops (close erodes the dilation back before filling — thin 1-px curves survive closing almost unchanged). Correct order: dilate → flood-fill exterior → keep interior → erode back. Fixing the fill function.
+
+The corrected fill is dramatic: components 90→6, largest 104px→20k px, erosion survival 0.00→0.92 (solid regions), and the old model already scores 0.124 vs filled targets (vs 0.047 vs outlines). Let me view the montage to confirm the filled regions land on the disease.
+
+Fill validated: solid regions that exactly match the polygon shapes. Before composing the report, one quick sanity check — the 8-image test earlier passed (IoU 0.91) against outline masks, which seems surprising for 1-px targets. Let me verify which masks those were and check the relaunched 50-test.
+
+The 8-image masks were confirmed lacy 1-px (erode survival 0.0) — yet the 8-image test passed at 0.91 IoU, which is possible because thresholding through bilinear ramps can trace thin curves on memorized images. Consistent. Now checking the relaunched 50-test (its log was redirected to a file) and the filled corpus size.
+
+50-test is at step 250 (cls already 49/50, lesion IoU crawling 0.021→0.035) — consistent with "outline targets are unlearnable at scale". And the filled corpus is only 6.6 MB — tiny for a Kaggle patch upload. Now the root-cause fix in the pack script.
+
+Verifying the fixed renderer produces filled masks.
+
+Fix verified. Now appending the full audit trail to RUNLOG.md — reading its tail first for exact append.
+
+RUNLOG updated. Checking the 50-image test's latest progress for the report.
+
+Everything for this round is done — here's the full picture: what the project is, how it works, an honest architecture review, and the root cause I found (with fix implemented and validated). The 50-image confirmation test is still running in the background (step 325/500, IoU 0.042, cls 49/50 — its verdict lands next).
+
+---
+
+What CropGuard is
+
+A lightweight multi-task model for tomato leaf disease, built to run on a phone
+8-class classification: healthy, bacterial_spot, early_blight, late_blight, leaf_mold, mosaic_virus, septoria_leaf_spot, yellow_leaf_curl_virus
+2-channel segmentation: lesion mask + leaf mask
+Severity = lesion_px / leaf_px, computed analytically from the masks (not learned)
+Detection was ruled out of scope; corpus: /home/logiclocus/tmp/cgpack/cropguard_v7_split (train 715 / val 156 / test 150; PlantDoc 79 held for classification-only eval)
+
+How we implemented it
+
+Model (2.53M params, INT8-friendly)
+fasternet_t0 (pretrained, ImageNet) → features at 4 scales [40,80,160,320] → BiFPNLite neck (width 96) → BilinearDecoder (progressive 80→160→320, Hardswish; finest features stride-4) → 2 lesion/leaf logits at 320×320 → LesionGatedClassificationHead (features gated by the detached lesion mask) → 8-class logits.
+
+Training (v8 recipe)
+Loss = cls CE (inverse-√ class weights capped 3×, label smoothing 0.05) + seg_loss_v7 (lesion: BCE pos_weight=20 + 3× Focal-Tversky α=0.3 β=0.7 γ=1.33; leaf: BCE+Dice with −1 sentinel exclusions)
+AdamW lr 5e-4, wd 1e-4, cosine warmup 450/10800 steps, grad clip 10, AMP, EMA 0.999, batch 8 @ 320px, seed 1337
+Staged gates: dataset-hash gate → 8-image memorization gate → 102 epochs training (55-min Kaggle cap) → val summary. Checkpoint selection = val macro-F1 (tie-break lesion IoU)
+PlantDoc test untouched until item 4
+
+Where it stands (measured): cls macro-F1 0.68 (raw, epoch 35); lesion segmentation broken (val IoU ~0.04-0.05, flat for 102 epochs, area over-prediction 3-89×); severity worse than the constant baseline (0.1026 vs 0.0384).
+
+What was actually wrong — found today
+
+The architecture was never the main problem. *The lesion masks in the corpus are 1-pixel polygon outlines, not filled regions.
+
+Raw evidence
+chk_maskthick.py -> frac of pixels surviving 3x3 erosion: mean=0.000 (all 635 lesioned masks)
+chk_maskstats.py -> median 181 connected components/mask @320, largest comp p50 = 25px
+constant-blob ceiling IoU on val = 0.0000 (no pixel is lesion in >50% of images)
+ASCII dump: 1-px open curves, e.g. ".....#..................."
+SOURCE: prepare_plantseg.py:97-118 poly_to_mask() walked polygon EDGES
+        vertex-to-vertex, 1px per step — interior never filled
+Consequence: the model was trained to reproduce lacy scribbles — impossible at stride-4 resolution — so it converged to a diffuse haze (that's the flat 0.04 IoU and the "over-prediction"). The 8-image gate only "passed" because it memorized 8 scribble patterns. Severity labels were a perimeter/leaf ratio (p50 0.0125), not area ratio. Boxes were outline fragments.
+
+Problems in the architecture/design (honest list)
+
+#  Issue  Severity  Verdict
+
+1  Mask outline bug (data, not arch)  Fatal for seg  Fixed today
+2  Recall-biased lesion loss (pos_weight 20, Tversky β=0.7)  Tuned for the broken targets  Keep for the clean retrain (single variable); knob #1 if over-prediction persists
+3  Finest features stride-4 → tiny spots near representable limit  Moderate  Add P2/stride-2 head only if IoU plateaus after the fix
+4  gt_mask_prob 0.8→0.2: cls gated by GT masks in training, predicted masks at eval  Secondary train/eval mismatch  Consider after retrain
+5  Capacity: fasternet_t0 + 96-wide neck  Adequate (8-image fit proves it)  Upgrade only if underfitting shows
+6  "Photometric-only" was opaque: HSV jitter + 30% leaf-cutout paste-background stayed ON for the whole v8 run  Moderate  Re-examine after retrain
+7  Train exclusions no-op bug (train keeps 32 audit-flagged images; they carry cls=-1 anyway)  Benign  Documented; fix optional
+8  Eval: threshold sweep capped at 0.7; metrics computed against outline targets were meaningless  Moderate  Extend sweep + re-measure on filled targets
+
+What I implemented (this session)
+
+Root-cause fix: prepare_plantseg.py poly_to_mask() now fills polygon interiors (even-odd scanline). Verified: test rects → 7000 px filled, interiors marked.
+Corpus repair: filled the existing outlines (dilate→flood-fill→erode)
+comps p50 90 -> 6 | largest comp 104px -> 20003px | erosion survival 0.000 -> 0.916
+area x22.3 median (p10 8.4, p90 74.1) | 635/635 changed | 0 needed kernel > 3
+new corpus: /home/logiclocus/tmp/cgpack/cropguard_v8_filled/  (masks 6.6MB, rest symlinked)
+montage: work_fill/outline_vs_filled.png  (solid fills match polygon silhouettes)
+Re-eval of the old checkpoint vs correct targets: val IoU 0.0466 (vs outlines) → 0.1241 (vs filled) at thr 0.3 — even the outline-trained model overlaps real regions 2.7× better. Retraining on filled targets should improve materially.
+New severity baselines recomputed (val mean 0.3912, constant-baseline MAE 0.3023 — the old 0.0384 was a perimeter artifact).
+Everything appended to RUNLOG.md.
+
+What works / what does not / suspicious / next step
+Works: data path, optimizer/LR, EMA, alignment, cls head (0.68 F1), all training plumbing (verified step-by-step).
+Does not (with evidence): seg learning on v8 — now explained by the outline targets; severity against broken GT.
+Suspicious: 8-image gate passing on outline masks (memorization of scribbles — a misleading gate; it should be re-run on filled masks); the geometry-aug gate failure may also have been an outline artifact — retest after retrain.
+Next step (needs your go)*: retrain on the filled corpus on Kaggle — upload the 6.6 MB masks patch, run the v8 recipe unchanged (single variable: correct targets), ~1h GPU. I'd expect meaningful lesion IoU at last; then items 4-6 run against the real checkpoint. The 50-image test result will be appended when it lands (running, log growing: step 325/500).

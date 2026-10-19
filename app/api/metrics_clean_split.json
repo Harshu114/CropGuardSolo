@@ -1,0 +1,41 @@
+{
+  "split": "test",
+  "n_images": 1240,
+  "mAP@0.5": 0.5243832269953137,
+  "mAP@0.5:0.95": 0.4422447857978093,
+  "cls_top1": 0.8504446240905417,
+  "cls_macro_f1": 0.8385654345016309,
+  "seg_mIoU": 0.882615188931808,
+  "seg_dice": 0.9376480059449664,
+  "sev_mae": 0.06768822126811551,
+  "sev_rmse": 0.07493318035454384,
+  "sev_r2": -1.3264876682102522,
+  "sev_qwk": 0.7996121525533291,
+  "paper_targets": {
+    "mAP@0.5": 0.892,
+    "mAP@0.5:0.95": 0.624,
+    "cls_top1": 0.987,
+    "seg_mIoU": 0.863,
+    "seg_dice": 0.912,
+    "sev_mae": 0.042
+  },
+  "provenance": {
+    "why": "Re-baseline on a leak-free, deduplicated test split. The original metrics.json was measured on a split with 2.72% dhash leakage (label_audit_leakage.json) and 1,286 images; this removes that so the reported numbers cannot be leakage.",
+    "cleaning": "data_pipeline/scripts/clean_corpus.py -- 1,425 duplicate images removed, 52 images with conflicting labels dropped, 32 group representatives moved so no duplicate group straddles a split",
+    "counts_after": {
+      "train": 28328,
+      "val": 1852,
+      "test": 1240
+    },
+    "checkpoint": "app/api/cropguard_model_v5.pt (unchanged)",
+    "original_leaked_split": {
+      "n_images": 1286,
+      "mAP@0.5": 0.5114,
+      "mAP@0.5:0.95": 0.4311,
+      "cls_top1": 0.8527,
+      "seg_mIoU": 0.8797,
+      "sev_r2": -1.4091
+    },
+    "conclusion": "Leakage was NOT inflating the results: mAP@0.5 rose 0.511 -> 0.524 and classification fell within noise (0.8527 -> 0.8504). The originally reported figures are therefore trustworthy."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "artifact": "cropguard_model_final.pt",
+  "sha256": "7727f3ba8a3436c20863859eafc01ee4e645941b5aa6226eb21d74dbc972e7c2",
+  "bytes": 10547467,
+  "params_M": 2.599,
+  "source_checkpoint": "best_stage5",
+  "classes": 16,
+  "input_size": 320,
+  "reg_max": 8
+}

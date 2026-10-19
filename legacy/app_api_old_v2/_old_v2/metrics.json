@@ -1,0 +1,41 @@
+{
+  "split": "test",
+  "n_images": 4407,
+  "n_classes_evaluated": 16,
+  "mAP@0.5": 0.020330753503747186,
+  "mAP@0.5:0.95": 0.004302080730114062,
+  "mAP50_per_class": {
+    "Healthy": 0.0249,
+    "bacterial_spot": 0.1409,
+    "early_blight": 0.0002,
+    "late_blight": 0.0166,
+    "leaf_miner": 0.0025,
+    "leaf_mold": 0.0001,
+    "magnesium_deficiency": 0.0001,
+    "mosaic_virus": 0.0,
+    "nitrogen_deficiency": 0.0,
+    "potassium_deficiency": 0.0,
+    "septoria_leaf_spot": 0.0462,
+    "spider_mites": 0.0037,
+    "spotted_wilt_virus": 0.0,
+    "target_spot": 0.0889,
+    "tomato": 0.0002,
+    "yellow_leaf_curl_virus": 0.001
+  },
+  "cls_top1": 0.9514408894939869,
+  "cls_macro_f1": 0.9227219319485775,
+  "seg_mIoU": 0.4291532361245417,
+  "seg_dice": 0.600569939285564,
+  "sev_mae": 0.053905744693227856,
+  "sev_rmse": 0.08658012783164375,
+  "sev_r2": 0.6316393911963346,
+  "sev_qwk": 0.6750388314591542,
+  "paper_targets": {
+    "mAP@0.5": 0.892,
+    "mAP@0.5:0.95": 0.624,
+    "cls_top1": 0.987,
+    "seg_mIoU": 0.863,
+    "seg_dice": 0.912,
+    "sev_mae": 0.042
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "ganrajlongadge/cropguard-v9-eval",
+  "title": "CropGuard v9 Eval",
+  "code_file": "cropguard-v9-eval.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    "ganrajlongadge/cropguard-v7-diagnostics-input",
+    "ganrajlongadge/cropguard-v8-code",
+    "ganrajlongadge/cropguard-plantdoc-test",
+    "ganrajlongadge/cropguard-v9-filled-masks"
+  ],
+  "kernel_sources": [
+    "ganrajlongadge/cropguard-v8-train",
+    "ganrajlongadge/cropguard-v9-train"
+  ],
+  "competition_sources": [],
+  "model_sources": []
+}

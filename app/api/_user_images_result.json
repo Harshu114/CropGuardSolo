@@ -1,0 +1,146 @@
+[
+  {
+    "file": "bacterialspot.jpg",
+    "truth": "bacterial_spot",
+    "pred": "septoria_leaf_spot",
+    "conf": 0.8309,
+    "sev": "Severe",
+    "ndet": 1,
+    "note": "WRONG"
+  },
+  {
+    "file": "bacterialspot1.jpg",
+    "truth": "bacterial_spot",
+    "pred": "early_blight",
+    "conf": 0.9893,
+    "sev": "Severe",
+    "ndet": 1,
+    "note": "WRONG"
+  },
+  {
+    "file": "lateblight.jpg",
+    "truth": "late_blight",
+    "pred": "late_blight",
+    "conf": 0.5421,
+    "sev": "Severe",
+    "ndet": 1,
+    "note": ""
+  },
+  {
+    "file": "lateblight1.jpg",
+    "truth": "late_blight",
+    "pred": "late_blight",
+    "conf": 0.938,
+    "sev": "Severe",
+    "ndet": 2,
+    "note": ""
+  },
+  {
+    "file": "lateblight2.jpg",
+    "truth": "late_blight",
+    "pred": "late_blight",
+    "conf": 0.9995,
+    "sev": "Severe",
+    "ndet": 1,
+    "note": ""
+  },
+  {
+    "file": "magnesiumdeficiency.jpg",
+    "truth": "magnesium_deficiency",
+    "pred": "mosaic_virus",
+    "conf": 0.4181,
+    "sev": "Severe",
+    "ndet": 2,
+    "note": "TRUTH NOT A v5 CLASS -> nearest match forced"
+  },
+  {
+    "file": "magnesiumdeficiency1.jpg",
+    "truth": "magnesium_deficiency",
+    "pred": "mosaic_virus",
+    "conf": 0.7394,
+    "sev": "Severe",
+    "ndet": 8,
+    "note": "TRUTH NOT A v5 CLASS -> nearest match forced"
+  },
+  {
+    "file": "nitrogendeficiency.jpg",
+    "truth": "nitrogen_deficiency",
+    "pred": "Healthy",
+    "conf": 0.5488,
+    "sev": "Severe",
+    "ndet": 1,
+    "note": "TRUTH NOT A v5 CLASS -> nearest match forced"
+  },
+  {
+    "file": "nitrogendeficiency1.jpg",
+    "truth": "nitrogen_deficiency",
+    "pred": "Healthy",
+    "conf": 0.6146,
+    "sev": "Severe",
+    "ndet": 2,
+    "note": "TRUTH NOT A v5 CLASS -> nearest match forced"
+  },
+  {
+    "file": "leaf1.jpg",
+    "truth": "?",
+    "pred": "early_blight",
+    "conf": 0.9765,
+    "sev": "Severe",
+    "ndet": 1,
+    "note": ""
+  },
+  {
+    "file": "spotdisease.jpg",
+    "truth": "?",
+    "pred": "early_blight",
+    "conf": 0.9989,
+    "sev": "Severe",
+    "ndet": 2,
+    "note": ""
+  },
+  {
+    "file": "test1leaf.jpg",
+    "truth": "?",
+    "pred": "early_blight",
+    "conf": 0.4851,
+    "sev": "Severe",
+    "ndet": 12,
+    "note": ""
+  },
+  {
+    "file": "test2leaf.jpg",
+    "truth": "?",
+    "pred": "mosaic_virus",
+    "conf": 0.843,
+    "sev": "Severe",
+    "ndet": 3,
+    "note": ""
+  },
+  {
+    "file": "tomato-early-blight.webp",
+    "truth": "early_blight",
+    "pred": "septoria_leaf_spot",
+    "conf": 0.9021,
+    "sev": "Severe",
+    "ndet": 10,
+    "note": "WRONG"
+  },
+  {
+    "file": "tomato-late-blight.webp",
+    "truth": "?",
+    "pred": "late_blight",
+    "conf": 0.929,
+    "sev": "Severe",
+    "ndet": 3,
+    "note": ""
+  },
+  {
+    "file": "tomato-septoria-leaf-spot.webp",
+    "truth": "septoria_leaf_spot",
+    "pred": "septoria_leaf_spot",
+    "conf": 0.9999,
+    "sev": "Severe",
+    "ndet": 1,
+    "note": ""
+  }
+]

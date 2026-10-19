@@ -1,0 +1,23 @@
+{
+  "split": "test",
+  "n_images": 1286,
+  "mAP@0.5": 0.5113791311670284,
+  "mAP@0.5:0.95": 0.43106534499307275,
+  "cls_top1": 0.852689010132502,
+  "cls_macro_f1": 0.8429418693368095,
+  "seg_mIoU": 0.8797201621436582,
+  "seg_dice": 0.9360118382093784,
+  "sev_mae": 0.067700839107552,
+  "sev_rmse": 0.07487927739377125,
+  "sev_r2": -1.4091138428500627,
+  "sev_qwk": 0.7996260517295107,
+  "paper_targets": {
+    "mAP@0.5": 0.892,
+    "mAP@0.5:0.95": 0.624,
+    "cls_top1": 0.987,
+    "seg_mIoU": 0.863,
+    "seg_dice": 0.912,
+    "sev_mae": 0.042
+  },
+  "notes": "v5 model: detection mAP@0.5 0.511 (the old 16-class website model scored 0.020). sev_mae is NOT meaningful: the trivial constant predictor scores 0.0090 on this corpus, so sev_mae 0.0677 is worse than trivial. seg_dice/seg_mIoU measure leaf-mask box drawing (bbox fallback), not real lesion segmentation."
+}

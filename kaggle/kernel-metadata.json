@@ -1,0 +1,21 @@
+{
+  "id": "ganrajlongadge/cropguard-v7-train",
+  "title": "CropGuard v7 Train",
+  "code_file": "cropguard-v7-train.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": ["gpu"],
+  "dataset_sources": [
+    "ganrajlongadge/cropguard-corpus-claude",
+    "ganrajlongadge/cropguard-v7-code"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:2757e0c7d1e0a9cb43da657b97e223c321a98f5014bdf64f44f2f6b083ad2b2f",
+  "machine_shape": "NvidiaTeslaT4"
+}

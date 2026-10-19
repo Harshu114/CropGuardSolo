@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+node_modules/
+build/
+.dart_tool/
+.venv*/
+*.log
+.DS_Store
+.env.local
+.venv*

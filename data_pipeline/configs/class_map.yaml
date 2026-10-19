@@ -1,0 +1,73 @@
+# CropGuard class mapping + label policy.
+#
+# The 11 CropGuard classes are the PlantVillage tomato schema. PlantSeg names
+# its diseases differently (lowercase, underscores, sometimes aliases), so the
+# mapping must be explicit and VERIFIED, not guessed at runtime -- the expert
+# called this out and it is the difference between a working run and silently
+# training the wrong label on thousands of images.
+#
+# `verify_plantseg_classes` (in derive_dataset.py) checks a PlantSeg annotation
+# file against this table and reports every unmapped name, so a surprise
+# disease shows up as a loud error instead of a skipped image.
+
+classes:            # index order IS the class id used in YOLO label files
+  0: healthy
+  1: bacterial_spot
+  2: early_blight
+  3: late_blight
+  4: leaf_miner
+  5: leaf_mold
+  6: mosaic_virus
+  7: septoria_leaf_spot
+  8: spider_mites
+  9: target_spot
+  10: yellow_leaf_curl_virus
+
+plantseg_to_cropguard:      # PlantSeg disease name -> CropGuard name
+  bacterial_spot: bacterial_spot
+  bacterial_leaf_spot: bacterial_spot
+  early_blight: early_blight
+  late_blight: late_blight
+  leaf_miner: leaf_miner
+  leaf_mold: leaf_mold
+  tomato_mosaic_virus: mosaic_virus
+  mosaic_virus: mosaic_virus
+  septoria_leaf_spot: septoria_leaf_spot
+  septoria: septoria_leaf_spot
+  spider_mites: spider_mites
+  two_spotted_spider_mite: spider_mites
+  target_spot: target_spot
+  yellow_leaf_curl_virus: yellow_leaf_curl_virus
+  tomato_yellow_leaf_curl_virus: yellow_leaf_curl_virus
+  # PlantSeg hosts disease-bearing tissue; healthy leaves are largely absent.
+  # Keep the mapping so any healthy-labelled file is used as class 0.
+  healthy: healthy
+
+# Unmapped PlantSeg names are SKIPPED (loudly), never guessed.
+unknown_policy: skip
+
+# ---------------------------------------------------------------- severity ---
+# Expert correction: severity (lesion area / leaf area) is ill-defined on
+# PlantSeg's wide shots (whole plants, multi-leaf, fruit). Only close-ups have
+# an unambiguous denominator.
+severity:
+  # a close-up must have the leaf filling most of the frame
+  min_leaf_coverage: 0.55     # leaf mask px / image px
+  max_leaf_components: 1      # single connected leaf
+  # grade cutoffs, NOT arbitrary: the 1/5/25% split is the standard
+  # area-based scale used for tomato foliar disease assessment
+  # (percent of leaf area affected: <5 mild, 5-25 moderate, >25 severe).
+  grades:
+    1: 0.05
+    2: 0.25
+  # images failing the close-up test get severity -1 ("not assessed") rather
+  # than a number that looks meaningful and is not.
+  unassessed_value: -1.0
+
+# -------------------------------------------------------------- negatives ----
+# PlantSeg carries 33 non-tomato hosts: free "not a tomato leaf" data for the
+# abstention / OOD head (expert: cheap and compatible win).
+negatives:
+  enabled: true
+  label: not_tomato           # stored in severity csv + a dedicated label dir
+  max_images_per_host: 200

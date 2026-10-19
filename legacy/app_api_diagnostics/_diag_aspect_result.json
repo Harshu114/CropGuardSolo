@@ -1,0 +1,254 @@
+{
+  "bacterialspot.jpg": {
+    "truth": "bacterial_spot",
+    "size": "148x148",
+    "variants": {
+      "stretch(A)": [
+        "septoria_leaf_spot",
+        0.831
+      ],
+      "centercrop(B)": [
+        "septoria_leaf_spot",
+        0.831
+      ],
+      "letterbox(C)": [
+        "septoria_leaf_spot",
+        0.831
+      ]
+    }
+  },
+  "bacterialspot1.jpg": {
+    "truth": "bacterial_spot",
+    "size": "163x148",
+    "variants": {
+      "stretch(A)": [
+        "early_blight",
+        0.989
+      ],
+      "centercrop(B)": [
+        "early_blight",
+        0.978
+      ],
+      "letterbox(C)": [
+        "early_blight",
+        0.917
+      ]
+    }
+  },
+  "lateblight.jpg": {
+    "truth": "late_blight",
+    "size": "148x148",
+    "variants": {
+      "stretch(A)": [
+        "late_blight",
+        0.542
+      ],
+      "centercrop(B)": [
+        "late_blight",
+        0.542
+      ],
+      "letterbox(C)": [
+        "late_blight",
+        0.542
+      ]
+    }
+  },
+  "lateblight1.jpg": {
+    "truth": "late_blight",
+    "size": "625x491",
+    "variants": {
+      "stretch(A)": [
+        "late_blight",
+        0.938
+      ],
+      "centercrop(B)": [
+        "late_blight",
+        0.967
+      ],
+      "letterbox(C)": [
+        "late_blight",
+        0.958
+      ]
+    }
+  },
+  "lateblight2.jpg": {
+    "truth": "late_blight",
+    "size": "148x148",
+    "variants": {
+      "stretch(A)": [
+        "late_blight",
+        1.0
+      ],
+      "centercrop(B)": [
+        "late_blight",
+        1.0
+      ],
+      "letterbox(C)": [
+        "late_blight",
+        1.0
+      ]
+    }
+  },
+  "magnesiumdeficiency.jpg": {
+    "truth": null,
+    "size": "195x183",
+    "variants": {
+      "stretch(A)": [
+        "mosaic_virus",
+        0.418
+      ],
+      "centercrop(B)": [
+        "spider_mites",
+        0.32
+      ],
+      "letterbox(C)": [
+        "mosaic_virus",
+        0.351
+      ]
+    }
+  },
+  "magnesiumdeficiency1.jpg": {
+    "truth": null,
+    "size": "195x183",
+    "variants": {
+      "stretch(A)": [
+        "mosaic_virus",
+        0.739
+      ],
+      "centercrop(B)": [
+        "mosaic_virus",
+        0.676
+      ],
+      "letterbox(C)": [
+        "mosaic_virus",
+        0.613
+      ]
+    }
+  },
+  "nitrogendeficiency.jpg": {
+    "truth": null,
+    "size": "148x148",
+    "variants": {
+      "stretch(A)": [
+        "Healthy",
+        0.549
+      ],
+      "centercrop(B)": [
+        "Healthy",
+        0.549
+      ],
+      "letterbox(C)": [
+        "Healthy",
+        0.549
+      ]
+    }
+  },
+  "nitrogendeficiency1.jpg": {
+    "truth": null,
+    "size": "106x148",
+    "variants": {
+      "stretch(A)": [
+        "Healthy",
+        0.615
+      ],
+      "centercrop(B)": [
+        "Healthy",
+        0.628
+      ],
+      "letterbox(C)": [
+        "bacterial_spot",
+        0.281
+      ]
+    }
+  },
+  "test1leaf.jpg": {
+    "truth": null,
+    "size": "225x300",
+    "variants": {
+      "stretch(A)": [
+        "early_blight",
+        0.485
+      ],
+      "centercrop(B)": [
+        "leaf_mold",
+        0.463
+      ],
+      "letterbox(C)": [
+        "late_blight",
+        0.864
+      ]
+    }
+  },
+  "test2leaf.jpg": {
+    "truth": null,
+    "size": "547x365",
+    "variants": {
+      "stretch(A)": [
+        "mosaic_virus",
+        0.843
+      ],
+      "centercrop(B)": [
+        "mosaic_virus",
+        0.777
+      ],
+      "letterbox(C)": [
+        "mosaic_virus",
+        0.494
+      ]
+    }
+  },
+  "tomato-early-blight.webp": {
+    "truth": "early_blight",
+    "size": "750x619",
+    "variants": {
+      "stretch(A)": [
+        "septoria_leaf_spot",
+        0.902
+      ],
+      "centercrop(B)": [
+        "septoria_leaf_spot",
+        0.944
+      ],
+      "letterbox(C)": [
+        "septoria_leaf_spot",
+        0.993
+      ]
+    }
+  },
+  "tomato-late-blight.webp": {
+    "truth": "late_blight",
+    "size": "750x562",
+    "variants": {
+      "stretch(A)": [
+        "late_blight",
+        0.929
+      ],
+      "centercrop(B)": [
+        "late_blight",
+        0.891
+      ],
+      "letterbox(C)": [
+        "late_blight",
+        0.997
+      ]
+    }
+  },
+  "tomato-septoria-leaf-spot.webp": {
+    "truth": "septoria_leaf_spot",
+    "size": "750x500",
+    "variants": {
+      "stretch(A)": [
+        "septoria_leaf_spot",
+        1.0
+      ],
+      "centercrop(B)": [
+        "septoria_leaf_spot",
+        1.0
+      ],
+      "letterbox(C)": [
+        "septoria_leaf_spot",
+        0.997
+      ]
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "ganrajlongadge/cropguard-v10-train-detection-enabled",
+  "title": "CropGuard v10 Train (detection enabled)",
+  "code_file": "cropguard-v10-train.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    "ganrajlongadge/cropguard-v8-code",
+    "ganrajlongadge/cropguard-v7-diagnostics-input",
+    "ganrajlongadge/cropguard-v9-filled-masks"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [],
+  "model_sources": []
+}
